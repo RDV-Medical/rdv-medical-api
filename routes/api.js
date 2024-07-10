@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authenticateTokenMiddleware = require('../middlewares/authenticateTokenMiddleware');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 // Importation des contrôleurs
 const authController = require('../controllers/authController');
@@ -14,8 +14,7 @@ const laboratoriesController = require('../controllers/laboratoriesController');
 const examTypesController = require('../controllers/examTypesController');
 const laboratoryExamsController = require('../controllers/laboratoryExamsController');
 const appointmentsController = require('../controllers/appointmentsController');
-
-// const clinicalDoctorsController = require('../controllers/clinicalDoctorsController');
+const clinicDoctorsController = require('../controllers/clinicDoctorsController');
 
 // Middleware global pour toutes les routes sauf celles d'authentification
 router.use((req, res, next) => {
@@ -24,8 +23,8 @@ router.use((req, res, next) => {
         // Passer au prochain middleware ou route handler pour les routes d'authentification
         next();
     } else {
-        // Appliquer le middleware authenticateTokenMiddleware pour toutes les autres routes
-        authenticateTokenMiddleware(req, res, next);
+        // Appliquer le middleware authMiddleware pour toutes les autres routes
+        authMiddleware(req, res, next);
     }
 });
 
@@ -105,11 +104,11 @@ router.post('/appointments', appointmentsController.createAppointment); // Crée
 router.put('/appointments/:id', appointmentsController.updateAppointment); // Mettre à jour un rendez-vous
 router.delete('/appointments/:id', appointmentsController.deleteAppointment); // Supprimer un rendez-vous
 
-// // Routes pour les medecins de clinique
-// router.get('/clinical-doctors', clinicalDoctorsController.getClinicalDoctors); // Obtenir tous les medecins de clinique
-// router.get('/clinical-doctors/:id', clinicalDoctorsController.getClinicalDoctorById); // Obtenir un medecin de clinique par ID
-// router.post('/clinical-doctors', clinicalDoctorsController.createClinicalDoctor); // Créer un medecin de clinique
-// router.put('/clinical-doctors/:id', clinicalDoctorsController.updateClinicalDoctor); // Mettre à jour un medecin de clinique
-// router.delete('/clinical-doctors/:id', clinicalDoctorsController.deleteClinicalDoctor); // Supprimer un medecin de clinique
+// Routes pour les médecins de clinique
+router.get('/clinic-doctors', clinicDoctorsController.getClinicDoctors); // Obtenir tous les médecins de clinique
+router.get('/clinic-doctors/:id', clinicDoctorsController.getClinicDoctorById); // Obtenir un médecin de clinique par ID
+router.post('/clinic-doctors', clinicDoctorsController.createClinicDoctor); // Créer un médecin de clinique
+router.put('/clinic-doctors/:id', clinicDoctorsController.updateClinicDoctor); // Mettre à jour un médecin de clinique
+router.delete('/clinic-doctors/:id', clinicDoctorsController.deleteClinicDoctor); // Supprimer un médecin de clinique
 
 module.exports = router;
