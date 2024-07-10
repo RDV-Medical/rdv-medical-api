@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
+
+// Importation des middlewares
 const authMiddleware = require('../middlewares/authMiddleware');
+const { verifyTokenAndRole, checkRole } = require('../middlewares/authMiddleware');
 
 // Importation des contrôleurs
 const authController = require('../controllers/authController');
@@ -27,6 +30,11 @@ router.use((req, res, next) => {
         authMiddleware(req, res, next);
     }
 });
+
+// // Route protégée accessible uniquement par un utilisateur avec le rôle "Admin1"
+// router.get('/some-admin-protected-route', verifyTokenAndRole('Admin1'), someAdminProtectedRoute);
+// // Route protégée accessible uniquement par un utilisateur avec le rôle "Doctor" (vérifie le rôle après le token)
+// router.get('/some-role-protected-route', [verifyTokenAndRole('Doctor'), checkRole('Doctor')], someRoleProtectedRoute);
 
 // Routes pour l'authentification
 router.post('/auth/register', authController.register);

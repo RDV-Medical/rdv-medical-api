@@ -7,6 +7,7 @@ if (!secretKey) {
     throw new Error('JWT_SECRET n\'est pas défini dans les variables d\'environnement');
 }
 
+// Middleware pour vérifier le token et le rôle de l'utilisateur
 const verifyTokenAndRole = (role) => {
     return async (req, res, next) => {
         const authHeader = req.headers['authorization'];
@@ -51,7 +52,14 @@ const verifyTokenAndRole = (role) => {
     };
 };
 
-const isPatient = verifyTokenAndRole('Patient');
-const isDoctor = verifyTokenAndRole('Doctor');
+// Middleware pour vérifier un rôle spécifique (sans vérification du token)
+const checkRole = (role) => {
+    return (req, res, next) => {
+        if (req.user.role !== role) {
+            return res.status(403).json({ message: `Accès interdit : seuls les utilisateurs avec le rôle "${role}" peuvent accéder à cette ressource` }); // 403 Forbidden si le rôle ne correspond pas
+        }
+        next(); // Passer à l'exécution du prochain middleware ou de la route handler
+    };
+};
 
-module.exports = { isPatient, isDoctor };
+module.exports = { verifyTokenAndRole, checkRole };
